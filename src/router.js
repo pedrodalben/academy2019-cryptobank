@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import firebase from 'firebase'
-import Feed from './views/Feed.vue'
+import home from './views/Home.vue'
 
 Vue.use(Router)
 
@@ -11,16 +11,16 @@ const router = new Router({
   routes: [
     {
       path: '*',
-      redirect: '/feed'
+      redirect: '/home'
     },
     {
       path: '/',
-      redirect: '/feed'
+      redirect: '/home'
     },
     {
-      path: '/feed',
-      name: 'feed',
-      component: Feed,
+      path: '/home',
+      name: '/home',
+      component: home,
       meta: {
         requiresAuth: true
       }
@@ -38,7 +38,7 @@ const router = new Router({
     {
       path: '/pagar',
       name: 'pagar',
-      component: () => import(/* webpackChunkName: "new-post" */ './views/Pagar.vue'),
+      component: () => import(/* webpackChunkName: "pagar" */ './views/Pagar.vue'),
       meta: {
         requiresAuth: true
       }
@@ -46,7 +46,7 @@ const router = new Router({
     {
       path: '/depositar',
       name: 'depositar',
-      component: () => import(/* webpackChunkName: "new-post" */ './views/Depositar.vue'),
+      component: () => import(/* webpackChunkName: "depositar" */ './views/Depositar.vue'),
       meta: {
         requiresAuth: true
       }
@@ -54,7 +54,7 @@ const router = new Router({
     {
       path: '/transferir',
       name: 'transferir',
-      component: () => import(/* webpackChunkName: "post" */ './views/Transferir.vue'),
+      component: () => import(/* webpackChunkName: "transferir" */ './views/Transferir.vue'),
       meta: {
         requiresAuth: true
       }
