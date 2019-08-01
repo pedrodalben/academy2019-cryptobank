@@ -53,33 +53,33 @@
 </template>
 
 <script>
-import firebase from "firebase";
+import firebase from 'firebase'
 
 export default {
   data: () => ({
-    email: "",
-    password: ""
+    email: '',
+    password: ''
   }),
 
   methods: {
-    submitLogin() {
+    submitLogin () {
       firebase
         .auth()
         .signInWithEmailAndPassword(this.email, this.password)
         .then(() => {
-          alert("Autenticado com sucesso!");
-          this.$router.push({ path: "/feed" });
+          alert('Autenticado com sucesso!')
+          this.$router.push({ path: '/home' })
         })
         .catch(() => {
-          alert("Falha na autenticação!");
-        });
+          alert('Falha na autenticação!')
+        })
     },
 
-    handleNewAccount() {
-      this.$router.push({ path: "/create_account" });
+    handleNewAccount () {
+      this.$router.push({ path: '/create_account' })
     }
   }
-};
+}
 </script>
 
 <style scoped>

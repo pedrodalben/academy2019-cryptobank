@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import firebase from 'firebase'
+import * as firebase from 'firebase'
 
 export default {
   data: () => ({
@@ -50,11 +50,17 @@ export default {
         .then(() => {
           alert('Conta criada com sucesso !')
           this.$router.push({ path: '/login' })
+
+      const docId = firebase.firestore().collection('saldo').doc().id
+      const userUid = firebase.auth().currentUser.uid
+      const saldo = 0
+      firebase.firestore()
+        .collection('saldo').doc(docId).set({ id: docId, userUid, saldo })
         }).catch((error) => {
           alert('Erro ao criar conta \n\n' + error)
         })
     },
-        returnToLogin () {
+    returnToLogin () {
       this.$router.push({ path: '/login' })
     }
   }
