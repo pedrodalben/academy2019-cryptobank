@@ -1,6 +1,10 @@
 <template>
   <div class="pagar">
-    <Header></Header>
+    <Header>
+        <router-link class="back-button" slot="action-left" tag="button" to="/">
+        <img class="icon-back" :src="require('../assets/back.svg')">
+      </router-link>
+    </Header>
     <div class="blockTop">
       <p align="center">Efetuar pagamento</p>
       <div class="blockPrincipal">
@@ -8,52 +12,80 @@
           Informe a
           <b>quantia</b> desejada
         </p>
-        <form class="input" @submit.prevent="pagarsubtrai">
-          <p class="input">
-            $KA
-            <input class="box" type="number" min="10" max="15000" value="10" />
-          </p>
-          <p align="center" class="informacao">Digite um valor entre $KA 10,00 e $KA 15.000,00</p>
-          <div class="actions">
-            <button type="acao" id="login-button" class="center" @click="pagarsubtrai">pagar</button>
-          </div>
-        </form>
+        <p class="input">
+          $KA
+          <input
+            name="input"
+            class="box"
+            type="number"
+            min="10"
+            max="15000"
+            autofocus
+            placeholder="1"
+            v-model="ValorPagar"
+          />
+        </p>
+        <p align="center" class="informacao">Digite um valor entre $KA 10,00 e $KA 15.000,00</p>
+        <button type="acao" id="login-button" class="center" @click="pagar">pagar</button>
       </div>
     </div>
   </div>
 </template>
 
+
 <script>
 import Header from "@/components/Header";
-import Button from "@/components/form/Button";
-import FormControl from "@/components/form/FormControl";
-import * as firebase from "firebase";
-
+import firebase from "firebase";
+import { log } from "util";
+let postSnapshotListener = null;
 export default {
-  name: "transferir",
+  data: () => ({
+    ValorPagar: ""
+  }),
   components: {
-    Header,
-    Button,
-    FormControl
+    Header
   },
-  METHODS: {
-    pagarsubtrai() {
-      // console.log("chamou");
-      // const userUid = firebase.auth().currentUser.uid;
-      // firebase
-      //   .firestore()
-      //   .collection("saldo")
-      //   .where("userUid", "==", userUid)
-      //   .set({
-      //     saldo: 10
-      //   })
-      //   .then(function() {
-      //     console.log("Document successfully written!");
-      //   })
-      //   .catch(function(error) {
-      //     console.error("Error writing document: ", error);
-      //   });
-      this.$router.push({ path: "/transferir" });
+  methods: {
+    pagar() {
+      let saldo = 0;
+      let user = firebase.auth().currentUser;
+      let email;
+      if (this.ValorPagar >= 10 && this.ValorPagar <= 15000) {
+        email = user.email;
+
+        const docId = email;
+        const userUid = firebase.auth().currentUser.uid;
+        firebase
+          .firestore()
+          .collection("saldo")
+          .where("userUid", "==", userUid)
+          .get()
+          .then(snapshot => {
+            snapshot.docs.map(doc => {
+              saldo = doc.data().saldo;
+
+              if (this.ValorPagar > saldo) {
+                alert(
+                  "Voce nao pode pagar valores maior do que voce tem no banco"
+                );
+              } else {
+                saldo = saldo - this.ValorPagar;
+                firebase
+                  .firestore()
+                  .collection("saldo")
+                  .doc(docId)
+                  .set({ id: docId, userUid, saldo });
+                alert(
+                  "Voce efetuou um pagamento no valor : $K " + this.ValorPagar
+                );
+              }
+            });
+          });
+      } else {
+        alert(
+          "Voce precisa pagar um valor maior que $k 10 e menores que $k 15000"
+        );
+      }
     }
   }
 };

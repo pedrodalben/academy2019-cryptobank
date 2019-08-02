@@ -1,6 +1,10 @@
 <template>
   <div class="pagar">
-    <Header></Header>
+    <Header>
+        <router-link class="back-button" slot="action-left" tag="button" to="/">
+        <img class="icon-back" :src="require('../assets/back.svg')">
+      </router-link>
+    </Header>
     <div class="blockTop">
       <p align="center">Depositar</p>
       <div class="blockPrincipal">
@@ -8,37 +12,77 @@
           Informe a
           <b>quantia</b> desejada
         </p>
-        <form action="#" class="input">
-          <p class="input">
-            $KA
-            <input class="box" type="number" min="10" max="15000" value="10" />
-          </p>
-          <p align="center" class="informacao">Digite um valor entre $KA 10,00 e $KA 15.000,00</p>
-          <button type="acao" id="login-button" class="center" @click="Depositar">Depositar</button>
-        </form>
+        <p class="input">
+          $KA
+          <input
+            name="input"
+            class="box"
+            type="number"
+            min="10"
+            max="15000"
+            placeholder="1"
+            autofocus
+            v-model="ValorDepositar"
+          />
+        </p>
+        <p align="center" class="informacao">Digite um valor entre $KA 10,00 e $KA 15.000,00</p>
+        <button type="acao" id="login-button" class="center" @click="depositar">Depositar</button>
       </div>
     </div>
   </div>
 </template>
 
-<script>
-import Header from '@/components/Header'
-import Button from '@/components/form/Button'
-import FormControl from '@/components/form/FormControl'
-import * as firebase from 'firebase'
-import { METHODS } from 'http';
 
+<script>
+import Header from "@/components/Header";
+import firebase from "firebase";
+import { log } from "util";
+let postSnapshotListener = null;
 export default {
-  name: 'transferir',
+  data: () => ({
+    ValorDepositar: ""
+  }),
   components: {
-    Header,
-    Button,
-    FormControl
+    Header
+  },
+  methods: {
+    depositar() {
+      let saldo = 0;
+      let user = firebase.auth().currentUser;
+      let email;
+      if (this.ValorDepositar >= 10 && this.ValorDepositar <= 15000) {
+        email = user.email;
+
+        const docId = email;
+        const userUid = firebase.auth().currentUser.uid;
+        firebase
+          .firestore()
+          .collection("saldo")
+          .where("userUid", "==", userUid)
+          .get()
+          .then(snapshot => {
+            snapshot.docs.map(doc => {
+              saldo = doc.data().saldo;
+
+              saldo = saldo + parseInt(this.ValorDepositar);
+              firebase
+                .firestore()
+                .collection("saldo")
+                .doc(docId)
+                .set({ id: docId, userUid, saldo });
+              alert(
+                "Voce efetuou um deposito no valor : $K " + this.ValorDepositar
+              );
+            });
+          });
+      } else {
+        alert(
+          "Voce precisa depositar um valor maior que $k 10 e menores que $k 15000"
+        );
+      }
+    }
   }
-}
-METHODS:{
-  
-}
+};
 </script>
 
 <style scoped>

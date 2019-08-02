@@ -68,6 +68,7 @@ export default {
         .signInWithEmailAndPassword(this.email, this.password)
         .then(() => {
           alert('Autenticado com sucesso!')
+          
           this.$router.push({ path: '/home' })
         })
         .catch(() => {
