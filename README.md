@@ -54,7 +54,7 @@ Além disso, ele usa uma arquitetura voltada a eventos, o que se integra muito b
 
 Apesar da ideia original ser essa, Node não é só um servidor. Sim, você pode montar servidores http e https, assim como servidores de DNS, TCP, Media Server e etc. Mas agora também é possível criar aplicações desktop com o Node-WebKit e até mesmo ambientes de desenvolvimento para front-end."
 
-#### No todas funçoes foram feitas em nodes como:
+####Todas funçoes foram feitas em nodes como:
 
 Todas as Views vistas anteriormente utilizavam node para exercer funções e métodos. Essas funções eram diretamente voltadas para a comunicação entre as views e o banco de dados Firebase.
 
